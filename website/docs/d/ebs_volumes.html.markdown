@@ -16,7 +16,7 @@ This data source can be useful for getting a list of volume IDs with (for exampl
 
 The following demonstrates obtaining a map of availability zone to EBS volume ID for volumes with a given tag value.
 
-```hcl
+```terraform
 data "aws_ebs_volumes" "example" {
   tags = {
     VolumeSet = "TestVolumeSet"
@@ -26,13 +26,13 @@ data "aws_ebs_volumes" "example" {
 data "aws_ebs_volume" "example" {
   for_each = data.aws_ebs_volumes.example.ids
   filter {
-    name = "volume-id"
+    name   = "volume-id"
     values = [each.value]
   }
 }
 
 output "availability_zone_to_volume_id" {
-  value = {for s in data.aws_ebs_volume.example : s.id => s.availability_zone}
+  value = { for s in data.aws_ebs_volume.example : s.id => s.availability_zone }
 }
 ```
 
@@ -50,7 +50,7 @@ which take the following arguments:
   [the underlying AWS API](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeVolumes.html).
   For example, if matching against the `size` filter, use:
 
-```hcl
+```terraform
 data "aws_ebs_volumes" "ten_or_twenty_gb_volumes" {
   filter {
     name   = "size"
@@ -64,5 +64,6 @@ data "aws_ebs_volumes" "ten_or_twenty_gb_volumes" {
 
 ## Attributes Reference
 
+* `id` - AWS Region.
 * `ids` - A set of all the EBS Volume IDs found. This data source will fail if
   no volumes match the provided criteria.
